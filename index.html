@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://imgs.search.brave.com/lCxlq8YG457xs_QUqZ3Nzu2rEB8RIU-BHQwd97zebLY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNzQv/MjQxLzYyMy9zbWFs/bC9hLWNsb3NldXAt/Ym91cXVldC1vZi12/aWJyYW50LXBpbmst/YW5kLXdoaXRlLXBl/b25pZXMtYWdhaW5z/dC1hLWRhcmstYmFj/a2dyb3VuZC1waG90/by5qcGc">
+    <title>Abigail❤</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdf2f8; /* Soft pastel pink */
+            background-image: radial-gradient(#fbcfe8 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #4b5563;
+            overflow-x: hidden;
+        }
+
+        .font-cursive { font-family: 'Dancing Script', cursive; }
+        .font-pixel { font-family: 'Press Start 2P', cursive; line-height: 1.5; }
+
+        /* --- GIFT BOX CSS --- */
+        #intro-screen {
+            transition: opacity 1s ease, visibility 1s;
+        }
+        .gift-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .gift-container:hover {
+            transform: scale(1.05);
+        }
+        .gift-box {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 120px;
+            background-color: #fb7185; /* Rose-400 */
+            border-radius: 8px;
+            box-shadow: inset 0px -10px 20px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.15);
+        }
+        /* Vertical Ribbon */
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 100%;
+            background-color: #fde047; /* Yellow-300 */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        }
+        .gift-lid {
+            position: absolute;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 40px;
+            background-color: #f43f5e; /* Rose-500 */
+            border-radius: 6px;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
+        }
+        /* Lid Ribbon */
+        .gift-lid::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 100%;
+            background-color: #facc15; /* Yellow-400 */
+        }
+        .gift-bow-left, .gift-bow-right {
+            position: absolute;
+            bottom: 145px;
+            width: 60px;
+            height: 50px;
+            border: 12px solid #facc15;
+            border-radius: 50%;
+            z-index: 9;
+            transition: opacity 0.4s;
+        }
+        .gift-bow-left {
+            left: 35px;
+            border-bottom-color: transparent;
+            border-right-color: transparent;
+            transform: rotate(-30deg);
+        }
+        .gift-bow-right {
+            right: 35px;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            transform: rotate(30deg);
+        }
+        /* Open Animation Classes */
+        .gift-container.open .gift-lid {
+            transform: translate(-50%, -150px) rotate(-15deg);
+            opacity: 0;
+        }
+        .gift-container.open .gift-bow-left, .gift-container.open .gift-bow-right {
+            opacity: 0;
+        }
+        .gift-container.open .gift-box {
+            animation: shake 0.4s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-55%) rotate(-2deg); }
+            50% { transform: translateX(-45%) rotate(2deg); }
+            75% { transform: translateX(-55%) rotate(-2deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        /* --- MAIN WRAPPER FADE --- */
+        #main-wrapper {
+            opacity: 0;
+            display: none;
+            transition: opacity 1s ease-in;
+        }
+
+        /* --- 3D FLIP CARDS --- */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 220px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner, .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .flip-card-front {
+            background-color: #fff;
+            border: 2px solid #fbcfe8;
+        }
+        .flip-card-back {
+            background-color: #fdf2f8;
+            border: 2px solid #f9a8d4;
+            transform: rotateY(180deg);
+        }
+
+        /* --- OTHERS --- */
+        .flower-card:hover { transform: translateY(-10px) rotate(2deg); }
+        .flower-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        
+        .pixel-box {
+            background-color: #fff;
+            border: 4px solid #374151;
+            box-shadow: 8px 8px 0px #a78bfa;
+            border-radius: 8px;
+        }
+        .pixel-btn {
+            background-color: #fbcfe8;
+            border: 4px solid #374151;
+            box-shadow: 4px 4px 0px #374151;
+            transition: all 0.1s;
+        }
+        .pixel-btn:active { box-shadow: 0px 0px 0px #374151; transform: translate(4px, 4px); }
+
+        /* Floating Hearts Animations */
+        .bg-heart {
+            position: fixed;
+            color: rgba(244, 114, 182, 0.3);
+            user-select: none;
+            z-index: -1;
+            animation: bgFloat 10s linear infinite;
+        }
+        @keyframes bgFloat {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        /* Hug Hearts */
+        .heart-particle {
+            position: fixed;
+            bottom: -10%;
+            user-select: none;
+            pointer-events: none;
+            animation: floatUp ease-in forwards;
+            z-index: 100;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) scale(1.5) rotate(360deg); opacity: 0; }
+        }
+
+        /* Pop In Animation for Hug GIF */
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop-in { animation: popIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        /* Custom Hug Bears Animation */
+        .bear-left { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform: translateX(-60px); }
+        .bear-right { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scaleX(-1) translateX(-60px); }
+        .bear-heart { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform: translateY(10px) scale(0); opacity: 0; }
+
+        .is-hugging .bear-left { transform: translateX(-12px) rotate(15deg); }
+        .is-hugging .bear-right { transform: scaleX(-1) translateX(-12px) rotate(15deg); }
+        .is-hugging .bear-heart { transform: translateY(-40px) scale(1.2); opacity: 1; transition-delay: 0.2s; }
+
+        /* Falling Flowers Animation */
+        .flower-particle {
+            position: fixed;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            z-index: 100;
+            animation: fallDown linear forwards;
+        }
+        @keyframes fallDown {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(120vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Background Floating Hearts Container -->
+    <div id="bg-hearts-container"></div>
+
+    <!-- INTRO SCREEN: GIFT BOX -->
+    <div id="intro-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-pink-50 backdrop-blur-sm">
+        <h1 class="text-3xl md:text-5xl font-bold text-pink-500 mb-12 animate-pulse text-center px-4">
+            Quien cumple años hoy? <br> Toca la cajita Abigail ❤🎁
+        </h1>
+        <div class="gift-container" onclick="openGift()">
+            <div class="gift-bow-left"></div>
+            <div class="gift-bow-right"></div>
+            <div class="gift-lid"></div>
+            <div class="gift-box"></div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div id="main-wrapper" class="relative z-10 pb-10">
+        
+        <!-- Hero Section -->
+        <header class="pt-20 pb-12 text-center px-4">
+            <h1 class="font-cursive text-5xl md:text-7xl text-pink-500 mb-4 drop-shadow-sm">Para Abigail</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Un pequeño detalle interactivo para sacarte una sonrisa hoy y recordarte lo genial que eres.</p><br/>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Celebrando tu cumpleaños a la distancia <b>DISFRUTA AL MAXIMO TU DIA</b></p>
+        </header>
+
+        <!-- Razones por las que te amo (Flip Cards) -->
+        <section class="py-12 px-6 max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">Cosas que me encantan de ti ✨</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front flex-col">
+                            <span class="text-4xl mb-2">😊</span>
+                            <h3 class="text-xl font-bold text-pink-500">Dato #1</h3>
+                            <p class="text-xs text-gray-400 mt-2">(Toca para girar)</p>
+                        </div>
+                        <div class="flip-card-back flex-col">
+                            <p class="text-gray-700 font-medium">Eres hermosa nunca olvides eso y si lo haces solo recuerdame.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front flex-col">
+                            <span class="text-4xl mb-2">🎮</span>
+                            <h3 class="text-xl font-bold text-pink-500">Dato #2</h3>
+                            <p class="text-xs text-gray-400 mt-2">(Toca para girar)</p>
+                        </div>
+                        <div class="flip-card-back flex-col">
+                            <p class="text-gray-700 font-medium">Eres una persona increible me encanta tu compañia.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front flex-col">
+                            <span class="text-4xl mb-2">🚀</span>
+                            <h3 class="text-xl font-bold text-pink-500">Dato #3</h3>
+                            <p class="text-xs text-gray-400 mt-2">(Toca para girar)</p>
+                        </div>
+                        <div class="flip-card-back flex-col">
+                            <p class="text-gray-700 font-medium">Haces que la espera sea divertida.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tu jardín virtual (Flores) -->
+        <section class="py-16 px-6 max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Tu jardín virtual 🌸</h2>
+                <p class="text-gray-500">Ya que aún no puedo dártelas en persona, te traje tus favoritas.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="flower-card bg-white p-4 rounded-3xl shadow-sm border border-pink-100 cursor-pointer" onclick="rainFlowers('gerbera')">
+                    <div class="h-64 rounded-2xl overflow-hidden mb-4">
+                        <img src="https://images.unsplash.com/photo-1562690868-60bbe7293e94?auto=format&fit=crop&w=800&q=80" alt="Gerberas" class="w-full h-full object-cover pointer-events-none">
+                    </div>
+                    <h3 class="text-xl font-semibold text-center text-pink-500 mb-1">Gerberas</h3>
+                    <p class="text-center text-sm text-gray-500">Tan alegres y llenas de color, me recuerdan mucho a tu energía.</p>
+                </div>
+                <div class="flower-card bg-white p-4 rounded-3xl shadow-sm border border-pink-100 cursor-pointer" onclick="rainFlowers('peony')">
+                    <div class="h-64 rounded-2xl overflow-hidden mb-4">
+                        <img src="https://imgs.search.brave.com/lCxlq8YG457xs_QUqZ3Nzu2rEB8RIU-BHQwd97zebLY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNzQv/MjQxLzYyMy9zbWFs/bC9hLWNsb3NldXAt/Ym91cXVldC1vZi12/aWJyYW50LXBpbmst/YW5kLXdoaXRlLXBl/b25pZXMtYWdhaW5z/dC1hLWRhcmstYmFj/a2dyb3VuZC1waG90/by5qcGc" alt="Peonías" class="w-full h-full object-cover pointer-events-none">
+                    </div>
+                    <h3 class="text-xl font-semibold text-center text-pink-500 mb-1">Peonías</h3>
+                    <p class="text-center text-sm text-gray-500">Hermosas, delicadas y tus favoritas absolutas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Minijuego Co-op -->
+        <section class="py-16 px-6 max-w-4xl mx-auto">
+            <div class="pixel-box p-6 md:p-10 relative bg-gray-50">
+                <div class="text-center mb-8">
+                    <h2 class="font-pixel text-lg md:text-xl text-purple-600 mb-4">Nuestra Partida 🎮</h2>
+                    <p class="font-pixel text-xs text-gray-800 leading-relaxed uppercase">
+                        Misión actual:<br><span class="text-pink-500 text-sm mt-2 block">Amarte a distancia(por ahora)</span>
+                    </p>
+                </div>
+                <!-- Reward Interaction -->
+                <div id="rewardBox" class="text-center p-6 border-2 border-dashed border-gray-300 rounded-lg">
+                    <p class="text-sm mb-4 font-medium text-gray-600" id="rewardText">Tienes un objeto nuevo esperando en tu inventario...</p>
+                    <button onclick="claimReward()" id="rewardBtn" class="pixel-btn font-pixel text-[10px] sm:text-xs py-4 px-6 rounded-md cursor-pointer text-gray-800 w-full sm:w-auto">
+                        🎁 RECLAMAR RECOMPENSA
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Abrazo Virtual -->
+        <section class="py-12 px-6 max-w-xl mx-auto text-center">
+            <div class="bg-white p-8 rounded-[3rem] shadow-md border-4 border-pink-200 relative overflow-hidden flex flex-col items-center">
+                <h2 class="text-2xl font-bold text-pink-500 mb-2">Abrazo Virtual Cargando...</h2>
+                <p id="hugText" class="text-gray-500 mb-6 text-sm">Presiona el botón para recibir un abrazo aplastante.</p>
+                
+                <!-- Custom Hug Animation Container -->
+                <div id="hugGifContainer" class="hidden mb-6 w-48 h-48 rounded-2xl overflow-hidden shadow-md border-2 border-pink-100 bg-pink-50 relative flex items-center justify-center">
+                    <span id="leftBear" class="absolute text-6xl bear-left z-10">🐻</span>
+                    <span id="rightBear" class="absolute text-6xl bear-right z-10">🐻</span>
+                    <span id="hugHeart" class="absolute text-4xl bear-heart z-20">❤️</span>
+                </div>
+
+                <button id="hugBtn" onclick="sendHug()" class="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-4 px-8 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 z-10 relative">
+                    ❤ ¡Haz clic para un abrazo!
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <section class="py-16 text-center px-6">
+
+            <footer class="text-sm text-gray-500 font-medium pb-8">
+                <p>Guardando partida... Hasta nuestro gran encuentro... 💾 ❤️</p>
+                <p>Te quiere y ama tu Negro de confianza❤️</p>
+            </footer>
+        </section>
+
+    </div>
+
+    <script>
+        // --- 1. INTRO & GIFT BOX LOGIC ---
+        let giftOpened = false;
+        
+        function openGift() {
+            if(giftOpened) return;
+            giftOpened = true;
+            
+            const container = document.querySelector('.gift-container');
+            container.classList.add('open');
+
+            // Fire confetti
+            var duration = 2000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#f472b6', '#fb7185', '#fde047']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#f472b6', '#fb7185', '#fde047']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Transition to main content
+            setTimeout(() => {
+                const introScreen = document.getElementById('intro-screen');
+                const mainWrapper = document.getElementById('main-wrapper');
+                
+                introScreen.style.opacity = '0';
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    mainWrapper.style.display = 'block';
+                    // Trigger reflow to start fade in
+                    void mainWrapper.offsetWidth; 
+                    mainWrapper.style.opacity = '1';
+                }, 1000);
+            }, 1500);
+        }
+
+        // --- 2. FLOATING BACKGROUND HEARTS ---
+        function createBgHearts() {
+            const container = document.getElementById('bg-hearts-container');
+            const heartsCount = 15;
+            for(let i=0; i<heartsCount; i++) {
+                let heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('bg-heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                heart.style.fontSize = (Math.random() * 1.5 + 0.5) + 'rem';
+                container.appendChild(heart);
+            }
+        }
+        createBgHearts();
+
+        // --- 2.5 FALLING FLOWERS LOGIC ---
+        function rainFlowers(flowerType) {
+            // Emojis según el tipo de flor tocada
+            const emojis = flowerType === 'gerbera' ? ['🌼', '🌻', '🏵️'] : ['🌸', '🌺', '💮'];
+            
+            for(let i = 0; i < 25; i++) {
+                setTimeout(() => {
+                    const flower = document.createElement('div');
+                    flower.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    flower.classList.add('flower-particle');
+                    // Posición aleatoria a lo ancho de la pantalla
+                    flower.style.left = Math.random() * 100 + 'vw';
+                    // Tamaños variados
+                    flower.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                    // Velocidades variadas de caída (entre 3 y 6 segundos)
+                    flower.style.animationDuration = (Math.random() * 3 + 3) + 's'; 
+                    document.body.appendChild(flower);
+
+                    // Limpiar el DOM después de que caigan
+                    setTimeout(() => flower.remove(), 7000);
+                }, i * 100); // Pequeño retraso para que caigan en cascada
+            }
+        }
+
+        // --- 3. REWARD LOGIC ---
+        function claimReward() {
+            const box = document.getElementById('rewardBox');
+            box.innerHTML = `
+                <div class="animate-pop-in">
+                    <div class="text-4xl mb-2">🌟</div>
+                    <h3 class="font-pixel text-xs text-purple-600 mb-2">¡LOGRO DESBLOQUEADO!</h3>
+                    <p class="text-sm text-gray-800 font-bold mb-1">+1000 Puntos de Amor</p>
+                    <p class="text-sm text-gray-800 font-bold mb-1">+100 Besos a la distancia</p>
+                    <p class="text-sm text-gray-800 font-bold mb-1">+1,000,000 Abrazos hasta que nos veamos</p>
+                    <p class="text-xs text-gray-500">Guardado en el inventario de tu corazón.</p>
+                </div>
+            `;
+        }
+
+        // --- 4. HUG LOGIC ---
+        function sendHug() {
+            const hugContainer = document.getElementById('hugGifContainer');
+            const hugText = document.getElementById('hugText');
+            const hugBtn = document.getElementById('hugBtn');
+            
+            if (hugContainer) {
+                hugContainer.classList.remove('hidden');
+                
+                // Remover clases para reiniciar la animación en clics múltiples
+                hugContainer.classList.remove('animate-pop-in');
+                hugContainer.classList.remove('is-hugging');
+                void hugContainer.offsetWidth; // Forzar al navegador a recalcular (reflow)
+                
+                // Añadir clases para disparar la animación de la caja y los ositos
+                hugContainer.classList.add('animate-pop-in');
+                hugContainer.classList.add('is-hugging');
+                
+                hugText.innerText = "¡Abrazo enorme entregado con éxito! 🥰";
+                hugBtn.innerHTML = "❤ ¡Dame otro abrazo!";
+            }
+
+            const emojis = ['❤️', '🫂', '💖', '✨'];
+            for(let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    heart.classList.add('heart-particle');
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 5000);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
